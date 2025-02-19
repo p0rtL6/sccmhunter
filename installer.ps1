@@ -107,6 +107,10 @@ function install {
 
         if ($arguments['source'].IsFile) {
             $targetDirectory = $arguments['source'].AbsolutePath
+            $virtualEnvironmentPath = Join-Path -Path $targetDirectory -ChildPath '.venv'
+            if (Test-Path -Path $virtualEnvironmentPath) {
+                Remove-Item -Path $virtualEnvironmentPath -Recurse -Force
+            }
         }
         else {
             Write-Host 'Downloading source...'
