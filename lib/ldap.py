@@ -31,15 +31,17 @@ def get_machine_name(domain_controller, domain):
         s.logoff()
     return s.getServerName()
 
-def init_ldap_connection(target, tls_version, domain, username, password, lmhash, nthash, domain_controller, kerberos, hashes, aesKey):
+def init_ldap_connection(target, tls_version, domain, username, password, lmhash, nthash, domain_controller, kerberos, hashes, aesKey, port=None):
     user = '%s\\%s' % (domain, username)
     if tls_version is not None:
         use_ssl = True
-        port = 636
+        if port is None:
+            port = 636
         tls = ldap3.Tls(validate=ssl.CERT_NONE, version=tls_version)
     else:
         use_ssl = False
-        port = 389
+        if port is None:
+            port = 389
         tls = None
     ldap_server = ldap3.Server(target, get_info=ldap3.ALL, port=port, use_ssl=use_ssl, tls=tls)
     if kerberos:
@@ -57,7 +59,7 @@ def init_ldap_connection(target, tls_version, domain, username, password, lmhash
 
     return ldap_server, ldap_session
 
-def init_ldap_session(domain, username, password, lmhash, nthash, kerberos, domain_controller, ldaps, hashes, aesKey):
+def init_ldap_session(domain, username, password, lmhash, nthash, kerberos, domain_controller, ldaps, hashes, aesKey, port=None):
     if kerberos:
         #target = domain_controller
         netbiosname = get_machine_name(domain_controller, domain)
@@ -71,11 +73,11 @@ def init_ldap_session(domain, username, password, lmhash, nthash, kerberos, doma
 
     if ldaps:
         try:
-            return init_ldap_connection(target, ssl.PROTOCOL_TLSv1_2, domain, username, password, lmhash, nthash, domain_controller, kerberos, hashes, aesKey)
+            return init_ldap_connection(target, ssl.PROTOCOL_TLSv1_2, domain, username, password, lmhash, nthash, domain_controller, kerberos, hashes, aesKey, port)
         except ldap3.core.exceptions.LDAPSocketOpenError:
-            return init_ldap_connection(target, ssl.PROTOCOL_TLSv1, domain, username, password, lmhash, nthash, domain_controller, kerberos, hashes, aesKey)
+            return init_ldap_connection(target, ssl.PROTOCOL_TLSv1, domain, username, password, lmhash, nthash, domain_controller, kerberos, hashes, aesKey, port)
     else:
-        return init_ldap_connection(target, None, domain, username, password, lmhash, nthash, domain_controller, kerberos, hashes, aesKey)
+        return init_ldap_connection(target, None, domain, username, password, lmhash, nthash, domain_controller, kerberos, hashes, aesKey, port)
 
 def ldap3_kerberos_login(connection, target, user, password, domain='', lmhash='', nthash='', aesKey='', kdcHost=None, TGT=None, TGS=None, useCache=True):
     from pyasn1.codec.ber import encoder, decoder

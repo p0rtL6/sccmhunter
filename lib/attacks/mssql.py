@@ -17,13 +17,14 @@ https://github.com/Mayyhem/SharpSCCM
 class MSSQL:
 
     def __init__(self, username=None, password=None, domain=None, target_dom=None, 
-                        dc_ip=None,ldaps=False, kerberos=False, no_pass=False, hashes=None, 
+                        dc_ip=None, port=None, ldaps=False, kerberos=False, no_pass=False, hashes=None, 
                         aes=None, debug=False, target_user=None, stacked=False, site_code=None):
             self.username = username
             self.password = password
             self.domain = domain
             self.target_dom = target_dom
             self.dc_ip = dc_ip
+            self.port = port
             self.ldaps = ldaps
             self.kerberos = kerberos
             self.no_pass = no_pass
@@ -54,8 +55,8 @@ class MSSQL:
 
         try:
             ldap_server, self.ldap_session = init_ldap_session(domain=self.domain, username=self.username, password=self.password,
-                                                           lmhash=lmhash, nthash=nthash, kerberos=self.kerberos, domain_controller=self.dc_ip, 
-                                                           aesKey=self.aes, hashes=self.hashes, ldaps=self.ldaps)
+                                                           lmhash=lmhash, nthash=nthash, kerberos=self.kerberos, domain_controller=self.dc_ip,
+                                                           port=self.port, aesKey=self.aes, hashes=self.hashes, ldaps=self.ldaps)
             logger.debug(f'[+] Bind successful {ldap_server}')
 
         except ldap3.core.exceptions.LDAPSocketOpenError as e: 

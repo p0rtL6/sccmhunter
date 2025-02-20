@@ -13,6 +13,7 @@ def main(
     password        : str   = typer.Option(None, '-p',  help="Password"),
     domain          : str   = typer.Option(..., '-d',  help="Target domain"),
     dc_ip           : str   = typer.Option(..., '-dc-ip',  help = "IP address or FQDN of domain controller"),
+    port            : int   = typer.Option(None, '-port', help='Custom LDAP port'),
     ldaps           : bool  = typer.Option(False, '-ldaps', help='Use LDAPS instead of LDAP'),
     kerberos        : bool  = typer.Option(False, "-k", help='Use Kerberos authentication'),
     no_pass         : bool  = typer.Option(False, "-no-pass", help="don't ask for password (useful for -k)"),
@@ -24,7 +25,7 @@ def main(
     site_code       : str   = typer.Option(..., '-sc', help="Target site code to add user to.")):
 
 
-    mssqlhunter = MSSQL(username=username, password=password, domain=domain, dc_ip=dc_ip,ldaps=ldaps,
+    mssqlhunter = MSSQL(username=username, password=password, domain=domain, dc_ip=dc_ip, port=port, ldaps=ldaps,
                             kerberos=kerberos, no_pass=no_pass, hashes=hashes, aes=aes, debug=debug, 
                             target_user=target_user, stacked=stacked, site_code=site_code)
     init_logger(debug)

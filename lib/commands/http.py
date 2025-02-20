@@ -13,6 +13,7 @@ def main(
     password        : str   = typer.Option(None, '-p',  help="Password"),
     domain          : str   = typer.Option(None, '-d',  help="Target domain"),
     dc_ip           : str   = typer.Option(None, '-dc-ip',  help = "IP address or FQDN of domain controller"),
+    port            : int   = typer.Option(None, '-port', help='Custom LDAP port'),
     ldaps           : bool  = typer.Option(False, '-ldaps', help='Use LDAPS instead of LDAP'),
     kerberos        : bool  = typer.Option(False, "-k", help='Use Kerberos authentication'),
     no_pass         : bool  = typer.Option(False, "-no-pass", help="don't ask for password (useful for -k)"),
@@ -27,7 +28,7 @@ def main(
     sleep           : str   = typer.Option(10, '-sleep', help='Time to wait between registering and requesting policies')):
 
     logs_dir = init_logger(debug)
-    httphunter = HTTP(username=username, password=password, domain=domain, dc_ip=dc_ip,ldaps=ldaps,
+    httphunter = HTTP(username=username, password=password, domain=domain, dc_ip=dc_ip, port=port, ldaps=ldaps,
                             kerberos=kerberos, no_pass=no_pass, hashes=hashes, aes=aes, debug=debug, auto=auto,
                             computer_pass=computer_pass, computer_name=computer_name, uuid=uuid, mp=mp, sleep=sleep, logs_dir=logs_dir)
     httphunter.run()

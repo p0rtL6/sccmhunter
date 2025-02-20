@@ -77,13 +77,14 @@ class DATABASE:
 class SCCMHUNTER:
     
     def __init__(self, username=None, password=None, domain=None, target_dom=None, 
-                dc_ip=None, resolve=False, ldaps=False, kerberos=False, no_pass=False, hashes=None, 
+                dc_ip=None, port=None, resolve=False, ldaps=False, kerberos=False, no_pass=False, hashes=None, 
                 aes=None, debug=False, logs_dir = None, all_computers=False):
         self.username = username
         self.password= password
         self.domain = domain
         self.target_dom = target_dom
         self.dc_ip = dc_ip
+        self.port = port
         self.resolve = resolve
         self.ldaps = ldaps
         self.kerberos = kerberos
@@ -469,7 +470,7 @@ class SCCMHUNTER:
         try:
             ldap_server, self.ldap_session = init_ldap_session(domain=self.domain, username=self.username, password=self.password, lmhash=lmhash, 
                                                             nthash=nthash, kerberos=self.kerberos, domain_controller=self.dc_ip, 
-                                                            aesKey=self.aes, hashes=self.hashes, ldaps=self.ldaps)
+                                                            port=self.port, aesKey=self.aes, hashes=self.hashes, ldaps=self.ldaps)
             logger.debug(f'[+] Bind successful {ldap_server}')
         except ldap3.core.exceptions.LDAPSocketOpenError as e: 
             if 'invalid server address' in str(e):
